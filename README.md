@@ -18,13 +18,13 @@ rdht implements a very basic filter into which assumes the humidity/temperature 
 
 make
 
-#make install
+sudo make install
 
-#adduser dht
+sudo adduser dht
 
-#chmod a+s /opt/bin/rdht
+sudo chmod a+s /opt/bin/rdht
 
-#su dht -c "/opt/bin/rdht" &
+sudo su dht -c "/usr/local/bin/rdht" &
 
 $ cat /var/run/dht/humidity 
 
