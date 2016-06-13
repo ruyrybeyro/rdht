@@ -39,7 +39,7 @@ static uint8_t sizecvt(const int read)
   return (uint8_t)read;
 }
 
-static int readDHT(int *temp, int *rh)
+static int readDHT(int pin, int *temp, int *rh)
 {
   uint8_t laststate = HIGH;
   uint8_t counter = 0;
@@ -48,28 +48,28 @@ static int readDHT(int *temp, int *rh)
   dht22_dat[0] = dht22_dat[1] = dht22_dat[2] = dht22_dat[3] = dht22_dat[4] = 0;
 
   // pull pin down for 18 milliseconds
-  pinMode(DHTPIN, OUTPUT);
-  digitalWrite(DHTPIN, HIGH);
+  pinMode(pin, OUTPUT);
+  digitalWrite(pin, HIGH);
   delay(10);
-  digitalWrite(DHTPIN, LOW);
+  digitalWrite(pin, LOW);
   delay(18);
   // then pull it up for 40 microseconds
-  digitalWrite(DHTPIN, HIGH);
+  digitalWrite(pin, HIGH);
   delayMicroseconds(40); 
   // prepare to read the pin
-  pinMode(DHTPIN, INPUT);
+  pinMode(pin, INPUT);
 
   // detect change and read data
   for ( i=0; i< MAXTIMINGS; i++) {
     counter = 0;
-    while (sizecvt(digitalRead(DHTPIN)) == laststate) {
+    while (sizecvt(digitalRead(pin)) == laststate) {
       counter++;
       delayMicroseconds(1);
       if (counter == 255) {
         break;
       }
     }
-    laststate = sizecvt(digitalRead(DHTPIN));
+    laststate = sizecvt(digitalRead(pin));
 
     if (counter == 255) break;
 
@@ -135,7 +135,7 @@ int main (int argc, char *argv[])
 //     delay(1000); // wait 1sec to refresh
 //  }
 //   if (readRHT03 (DHTPIN, &newTemp, &newRh))
-     if ( readDHT(&newTemp, &newRh) )
+     if ( readDHT(DHTPIN, &newTemp, &newRh) )
      {
         static int t2, h2, ft = 1, terror=0, herror=0;
 
