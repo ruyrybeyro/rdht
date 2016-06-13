@@ -39,12 +39,11 @@ static uint8_t sizecvt(const int read)
   return (uint8_t)read;
 }
 
-static int read_dht22_dat()
+static int readDHT(int *temp, int *rh)
 {
   uint8_t laststate = HIGH;
   uint8_t counter = 0;
   uint8_t j = 0, i;
-  FILE * f;
 
   dht22_dat[0] = dht22_dat[1] = dht22_dat[2] = dht22_dat[3] = dht22_dat[4] = 0;
 
@@ -88,41 +87,12 @@ static int read_dht22_dat()
   // print it out if data is good
   if ((j >= 40) && 
       (dht22_dat[4] == ((dht22_dat[0] + dht22_dat[1] + dht22_dat[2] + dht22_dat[3]) & 0xFF)) ) {
-        int t, h;
-        static int t2, h2, ft = 1, terror=0, herror=0;
-        h = dht22_dat[0] * 256 + dht22_dat[1];
-        t = (dht22_dat[2] & 0x7F)* 256 + dht22_dat[3];
+
+        *rh = dht22_dat[0] * 256 + dht22_dat[1];
+        *temp = (dht22_dat[2] & 0x7F)* 256 + dht22_dat[3];
 
         /* negative temp */
-        if ((dht22_dat[2] & 0x80) != 0)  t = -t;
-
-    if (ft || (terror>4) || (herror>4) ) 
-    {
-       ft=0;
-       h2=h; t2=t;
-       terror=herror=0;
-    }
-
-    if ( (h > 0) && (h < 950)  && (abs(h2-h)<10) )
-    {
-    f=fopen("/var/run/dht/humidity.x", "w");
-    fprintf(f, "%d", h );
-    fclose(f);
-    rename("/var/run/dht/humidity.x", "/var/run/dht/humidity");
-    h2 = h;
-    herror=0;
-    }
-    else herror++;
-    if ( ( t < 600 ) && (abs(abs(t2)-abs(t))<10) )
-    {
-    f=fopen("/var/run/dht/temp.x", "w");
-    fprintf(f, "%d", t );
-    fclose(f);
-    rename("/var/run/dht/temp.x", "/var/run/dht/temp");
-    t2 = t;
-    terror=0;
-    }
-    else terror++;
+        if ((dht22_dat[2] & 0x80) != 0)  *temp = -*temp;
 
     return 1;
   }
@@ -137,6 +107,7 @@ int main (int argc, char *argv[])
 {
 //  int tries = 10;
   FILE * f;
+  int newTemp, newRh;
 
   if (wiringPiSetup () == -1)
     exit(EXIT_FAILURE) ;
@@ -152,7 +123,7 @@ int main (int argc, char *argv[])
     perror("Dropping privileges failed\n");
     exit(EXIT_FAILURE);
   }
-  chdir(DATADIR);
+  //chdir(DATADIR);
 
   f = fopen("/var/run/dht/pid", "w" );
   fprintf(f, "%d", getpid() );
@@ -163,8 +134,42 @@ int main (int argc, char *argv[])
 //  {
 //     delay(1000); // wait 1sec to refresh
 //  }
+//   if (readRHT03 (DHTPIN, &newTemp, &newRh))
+     if ( readDHT(&newTemp, &newRh) )
+     {
+        static int t2, h2, ft = 1, terror=0, herror=0;
 
-     read_dht22_dat();
+        if (ft || (terror>4) || (herror>4) )
+        {  
+           ft=0; 
+           h2=newRh; t2=newTemp;
+           terror=herror=0;
+        }
+
+        if ( (newRh > 0) && (newRh < 950)  && (abs(h2-newRh)<10) )
+        {
+           f=fopen("/var/run/dht/humidity.x", "w");
+           fprintf(f, "%d", newRh );
+           fclose(f);
+           rename("/var/run/dht/humidity.x", "/var/run/dht/humidity");
+           h2 = newRh;
+           herror=0;
+         }
+         else 
+           herror++;
+         if ( ( newTemp < 600 ) && (abs(abs(t2)-abs(newTemp))<10) )
+         {
+            f=fopen("/var/run/dht/temp.x", "w");
+            fprintf(f, "%d", newTemp );
+            fclose(f);
+            rename("/var/run/dht/temp.x", "/var/run/dht/temp");
+            t2 = newTemp;
+            terror=0;
+          }
+          else 
+            terror++;
+
+     }
      sleep(INTERVAL);
   }
 
