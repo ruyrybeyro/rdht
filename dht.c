@@ -49,9 +49,9 @@ static int readDHT(int pin, int *temp, int *rh)
 
   // pull pin down for 18 milliseconds
   pinMode(pin, OUTPUT);
-  digitalWrite(pin, HIGH);
-  delay(10);
-  digitalWrite(pin, LOW);
+  // digitalWrite(pin, HIGH); 
+  // delay(10);		   
+  digitalWrite(pin, LOW);  
   delay(18);
   // then pull it up for 40 microseconds
   digitalWrite(pin, HIGH);
