@@ -41,3 +41,54 @@ License: BSD
  --disable-secure Disable compile with FORTIY_SOURCE and stack-protector (enabled by default)
  --enable-development Compile with -g -O0 -Wall. Applies disable-secure automatically
 
+# Requeriments to install WiringPi 
+
+sudo apt-get install git-core
+
+#How to install WiringPi in a Raspberry
+
+git clone git://git.drogon.net/wiringPi
+
+cd wiringPi
+
+sudo ./build
+
+#How to use WiringPi on the Orange Pi mini/Pi
+
+Download the WiringOP on your Orange Pi mini/Pi. 
+
+For Orange Pi mini:
+
+git clone https://github.com/orangepi-xunlong/WiringOP -b orangepimini
+
+For Orange Pi:
+
+git clone https://github.com/orangepi-xunlong/WiringOP -b orangepi
+
+After download, you need direct into the WiringOP directory and run:
+
+chmod +x ./build
+
+And then install the WiringOP：
+
+sudo ./build
+
+#How to install WiringPi for Banana/Lamobo 
+
+For Banana Pro
+
+    git clone https://github.com/LeMaker/WiringBP.git -b bananapro
+
+For Banana Pi/Lamobo
+
+    git clone https://github.com/LeMaker/WiringBP.git -b bananapi
+
+Installation
+
+    cd WiringBP
+
+    chmod +x ./build
+
+    sudo ./build
+
+
