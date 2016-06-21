@@ -9,6 +9,8 @@ change DHTPIN in dht.c for your WiringPi Pin. It defaults to 5.
 
 change INTERVAL in dht.c if using other than rpimonitor with the default 10s delay polling.
 
+change TEMPERATURECORRECTION to calibrate the temperature sensor by another more accurate sensor. It defaults to -2 celsius.
+
 The DHT21 chip can only be polled every 1s. Use the files created in /var/run/dht
 
 rdht implements a very basic filter into which assumes the humidity/temperature changes cannot be abrupt to filter out the polling errors as the checksum is very basic.
