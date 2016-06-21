@@ -1,5 +1,5 @@
 # rdht   Jun 2016
-Daemon for polling DHT21/DHT22/AM2301/AM2302/RHT03 Temperature and humidity sensors on Raspberry/Banana Pi.
+Daemon for polling DHT11?/DHT21/DHT22/AM2301/AM2302/RHT03 Temperature and humidity sensors on Raspberry/Banana Pi.
 Based on lol_dht22: https://github.com/technion/lol_dht22 
 Requires wiringPi library. The readRHT03 function is not being used as the current function seems to do a better checking if the HT device stops transmitting abruptly (or we miss the transmitions).
 

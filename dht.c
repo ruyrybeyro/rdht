@@ -21,6 +21,9 @@
 /* waiting time */
 #define INTERVAL 8 /* with rpimonitor default, better be 8 */
 
+/* the temperature sensor seems consistently higher. Try to calibrate this with another sensor or a real termomether */
+#define TEMPERATURECORRECTION -20 /* 2 degress */
+
 #define DATADIR "/var/run/dht"
 
 #define MAXTIMINGS 85
@@ -160,7 +163,7 @@ int main (int argc, char *argv[])
          if ( ( newTemp < 600 ) && (abs(abs(t2)-abs(newTemp))<10) )
          {
             f=fopen("/var/run/dht/temp.x", "w");
-            fprintf(f, "%d", newTemp );
+            fprintf(f, "%d", newTemp + (TEMPERATURECORRECTION));
             fclose(f);
             rename("/var/run/dht/temp.x", "/var/run/dht/temp");
             t2 = newTemp;
