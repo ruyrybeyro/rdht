@@ -24,7 +24,7 @@ sudo make install
 
 sudo adduser dht
 
-sudo chmod a+s /opt/bin/rdht
+sudo chmod a+s /usr/local/bin/rdht
 
 sudo su dht -c "/usr/local/bin/rdht" &
 
